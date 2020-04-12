@@ -1,0 +1,50 @@
+<html>
+
+<!-- jq ui -->
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $( function() {
+          $( "#sortable" ).sortable({
+                      update: function (event, ui) {
+                              $(this).children().each(function (index) {
+                                       if ($(this).attr('data-position') != (index+1)) {
+                                               $(this).attr('data-position', (index+1)).addClass('updated');
+                                       }
+                              });
+      
+      
+                      }
+              });
+          $( "#sortable" ).disableSelection();
+        } );
+          function saveNewPositions() {
+                  var positions = [];
+                  $('.updated').each(function () {
+                       positions.push([$(this).attr('data-index'), $(this).attr('data-position')]);
+                       $(this).removeClass('updated');
+                  });
+      
+                  $.ajax({
+                       url: 'consultasJs.php',
+                       method: 'POST',
+                       dataType: 'text',
+                       data: {
+                                formulario: 'guardar_orden',
+                               update: 1,
+                               positions: positions
+                       }, success: function (data) {
+                                  $("#resultado12").html(data);
+                       }
+                  });
+          }
+        </script>
+
+        <ul id="sortable">
+            <li>1 MUNDO</li>
+            <li>2 QUERIDO</li>
+            <li>3 HOLA</li>
+        </ul>
+
+</html>
